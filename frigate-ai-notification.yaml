@@ -556,16 +556,17 @@ action:
         {% endif %}
 
       clip_path: "/api/events/{{ id }}/clip.mp4"
+      hls_path: "/api/frigate/notifications/{{ id }}/{{ camera }}/master.m3u8"
       snapshot_path: "/api/events/{{ id }}/snapshot.jpg"
       thumbnail_path: "/api/events/{{ id }}/snapshot.jpg"
 
       clip_url: "{{ (frigate_base_url ~ clip_path) if frigate_base_url else clip_path }}"
+      video_ios: "{{ (frigate_base_url ~ hls_path) if frigate_base_url else hls_path }}"
       local_clip_url: "{{ clip_url }}"
       clip_url_signed: "{{ clip_url }}"
       snapshot_url: "{{ (frigate_base_url ~ snapshot_path) if frigate_base_url else snapshot_path }}"
       thumbnail_url: "{{ (frigate_base_url ~ thumbnail_path) if frigate_base_url else thumbnail_path }}"
       thumbnail_android_url: "{{ thumbnail_url }}"
-      video_ios: "{{ clip_url }}"
       live_deeplink: "entityId:camera.{{ camera }}"
 
       has_clip: "{{ (payload.get('after') or {}).get('has_clip', false) }}"
@@ -1309,7 +1310,7 @@ action:
                       attachment:
                         url: >
                           {% if input_ios_live_view and (base_url | string | length > 0) %}
-                            {{ clip_url_signed }}
+                            {{ video_ios }}
                           {% else %}
                             {{ thumbnail_url ~ '?t=' ~ now_ts }}
                           {% endif %}
