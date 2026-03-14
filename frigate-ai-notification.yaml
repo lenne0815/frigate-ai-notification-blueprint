@@ -311,8 +311,6 @@ blueprint:
           unit_of_measurement: minutes
           mode: slider
 
-source_url: https://github.com/zacharyd3/Frigate-Vision/blob/main/frigate_vision.yaml
-
 trigger:
   - trigger: mqtt
     topic: frigate/events
