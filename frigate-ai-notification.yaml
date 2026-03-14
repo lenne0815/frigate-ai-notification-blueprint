@@ -602,8 +602,9 @@ action:
           {{ now_ts < until }}
         {% endif %}
 
-      # Use camera slug as tag to collapse cards per camera
-      tag_key: "{{ camera }}"
+      # Use event id as notification tag so iOS/Android updates replace the same card.
+      # Fallback to camera slug if id is missing.
+      tag_key: "{{ (id if (id | string | length > 0) else camera) }}"
 
   - choose:
       - conditions:
@@ -720,6 +721,7 @@ action:
                               channel: "{{ camera_name }} Notifications"
                               timeout: "{{ timeout_secs }}"
                               tag: "{{ tag_key }}"
+                              thread-id: "{{ tag_key }}"
                               group: "{{ camera_name }}"
                               notification_icon: "{{ icon }}"
                               data: { ttl: "0", priority: "high" }
@@ -755,6 +757,7 @@ action:
                           channel: "{{ camera_name }} Notifications"
                           timeout: "{{ timeout_secs }}"
                           tag: "{{ tag_key }}"
+                          thread-id: "{{ tag_key }}"
                           group: "{{ camera_name }}"
                           notification_icon: "{{ icon }}"
                           data: { ttl: "0", priority: "high" }
@@ -1047,6 +1050,7 @@ action:
                             channel: "{{ camera_name }} Notifications"
                             timeout: "{{ timeout_secs }}"
                             tag: "{{ tag_key }}"
+                            thread-id: "{{ tag_key }}"
                             group: "{{ camera_name }}"
                             data: { ttl: "0", priority: "high" }
                             notification_icon: "{{ icon }}"
@@ -1162,7 +1166,8 @@ action:
                     data:
                       channel: "{{ camera_name }} Notifications"
                       timeout: "{{ timeout_secs }}"
-                      tag: "{{ id }}"          # END uses event id, not camera, to keep a final card per event
+                      tag: "{{ tag_key }}"
+                      thread-id: "{{ tag_key }}"
                       group: "{{ camera_name }}"
                       notification_icon: "{{ icon }}"
                       data: { ttl: "0", priority: "high" }
@@ -1294,9 +1299,10 @@ action:
                     title: "{{ title }}"
                     message: "{{ message }}"
                     data:
-                      channel: "{{ camera }}_notifications"
+                      channel: "{{ camera_name }} Notifications"
                       timeout: "{{ timeout_secs }}"
                       tag: "{{ tag_key }}"
+                      thread-id: "{{ tag_key }}"
                       group: "{{ camera_name }}"
                       notification_icon: "{{ icon }}"
                       data: { ttl: "0", priority: "high" }
