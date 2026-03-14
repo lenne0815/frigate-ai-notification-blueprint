@@ -262,8 +262,8 @@ blueprint:
           default: ""
           selector: { text: {} }
         frigate_url:
-          name: Frigate Instance URL
-          description: Optional. Full base URL to your Frigate UI (include port if needed), e.g. https://frigate.lan:8971
+          name: Local Frigate URL
+          description: Local Frigate base URL (include port), e.g. http://192.168.178.50:8971
           default: ""
           selector: { text: {} }
         require_zones:
@@ -547,16 +547,25 @@ action:
       icon: >-
         mdi:{% if label == 'Person' %}account-outline{% elif label == 'Dog' %}dog{% elif label == 'Cat' %}cat{% elif label == 'Car' %}car{% else %}home-assistant{% endif %}
 
-      clip_path: "/api/frigate/notifications/{{ id }}/{{ camera }}/clip.mp4"
-      snapshot_path: "/api/frigate/notifications/{{ id }}/snapshot.jpg"
-      thumbnail_path: "/api/frigate/notifications/{{ id }}/thumbnail.jpg"
+      frigate_base_url: >-
+        {% set configured = (input_frigate_url | default('', true) | trim) %}
+        {% if configured %}
+          {{ configured | regex_replace('/+$','') }}
+        {% else %}
+          {{ local_url }}
+        {% endif %}
 
-      clip_url: "{{ (base_url ~ clip_path) if base_url else clip_path }}"
-      clip_url_signed: "{{ clip_url }}?sign=true"
-      snapshot_url: "{{ (base_url ~ snapshot_path) if base_url else snapshot_path }}"
-      thumbnail_url: "{{ (base_url ~ thumbnail_path) if base_url else thumbnail_path }}"
-      thumbnail_android_url: "{{ thumbnail_url ~ '?format=android' }}"
-      video_ios: "/api/frigate/notifications/{{ id }}/{{ camera }}/master.m3u8"
+      clip_path: "/api/events/{{ id }}/clip.mp4"
+      snapshot_path: "/api/events/{{ id }}/snapshot.jpg"
+      thumbnail_path: "/api/events/{{ id }}/snapshot.jpg"
+
+      clip_url: "{{ (frigate_base_url ~ clip_path) if frigate_base_url else clip_path }}"
+      local_clip_url: "{{ clip_url }}"
+      clip_url_signed: "{{ clip_url }}"
+      snapshot_url: "{{ (frigate_base_url ~ snapshot_path) if frigate_base_url else snapshot_path }}"
+      thumbnail_url: "{{ (frigate_base_url ~ thumbnail_path) if frigate_base_url else thumbnail_path }}"
+      thumbnail_android_url: "{{ thumbnail_url }}"
+      video_ios: "{{ clip_url }}"
       live_deeplink: "entityId:camera.{{ camera }}"
 
       has_clip: "{{ (payload.get('after') or {}).get('has_clip', false) }}"
@@ -569,12 +578,10 @@ action:
         {% else %}{{ clip_url }}{% endif %}
 
       frigate_review_url: >-
-        {% set configured = (input_frigate_url | default('', true) | trim) %}
-        {% if configured %}
-          {{ configured | regex_replace('/+$','') | regex_replace('/review$','') }}/review?camera={{ camera }}&id={{ id }}
+        {% if frigate_base_url %}
+          {{ frigate_base_url }}/review?id={{ id }}
         {% else %}
-          {% if base_url %}{{ base_url }}/api/frigate/review?camera={{ camera }}&id={{ id }}
-          {% elif local_url %}{{ local_url }}/api/frigate/review?camera={{ camera }}&id={{ id }}
+          {% if local_url %}{{ local_url }}/api/frigate/review?camera={{ camera }}&id={{ id }}
           {% else %}/api/frigate/review?camera={{ camera }}&id={{ id }}{% endif %}
         {% endif %}
 
@@ -1251,7 +1258,7 @@ action:
               temperature: "{{ input_temperature }}"
               generate_title: "{{ input_generate_title }}"
               expose_images: "{{ input_expose_images }}"
-              event_id: "{{ id }}"
+              video_file: "{{ local_clip_url }}"
               message: >-
                 {{ input_prompt }}
                 {% if input_sublabel and sub_label_text %}
