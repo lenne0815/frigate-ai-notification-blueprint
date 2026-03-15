@@ -1,5 +1,5 @@
 blueprint:
-  name: Frigate LLM Notification (iOS-aware)
+  name: Frigate LLM Notification lenne0815
   description: >
     Frigate review notifications with optional LLM image analysis and optional
     LLM video analysis, iOS-aware notification payloads, downloader support,
