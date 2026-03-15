@@ -1,5 +1,5 @@
 blueprint:
-  name: Frigate LLM Notification lenne0815
+  name: Frigate LLM Notification (iOS-aware)
   description: >
     Frigate review notifications with optional LLM image analysis and optional
     LLM video analysis, iOS-aware notification payloads, downloader support,
@@ -28,25 +28,44 @@ blueprint:
       name: Objects to match
       default: []
       selector:
-        object: {}
+        select:
+          multiple: true
+          custom_value: true
+          options:
+            - person
+            - person-verified
+            - car
+            - bicycle
+            - motorcycle
+            - dog
+            - cat
+            - package
+            - bird
 
     input_sub_labels:
       name: Sub-labels to match
       default: []
       selector:
-        object: {}
+        select:
+          multiple: true
+          custom_value: true
+          options: []
 
     input_zones:
       name: Zone device ids
       default: []
       selector:
-        object: {}
+        device:
+          multiple: true
 
     custom_zones:
-      name: Additional custom zones
+      name: Additional custom zone names
       default: []
       selector:
-        object: {}
+        select:
+          multiple: true
+          custom_value: true
+          options: []
 
     all_zones:
       name: Require all zones
@@ -58,7 +77,10 @@ blueprint:
       name: Person check list
       default: []
       selector:
-        object: {}
+        select:
+          multiple: true
+          custom_value: true
+          options: []
 
     person_zone:
       name: Person zone entity
@@ -67,7 +89,7 @@ blueprint:
         entity: {}
 
     custom_condition:
-      name: Custom condition template result
+      name: Custom condition result
       default: []
       selector:
         object: {}
@@ -98,16 +120,18 @@ blueprint:
         text: {}
 
     notify_devices:
-      name: Notify device ids
+      name: Notify devices
       default: []
       selector:
-        object: {}
+        device:
+          multiple: true
 
     ios_devices:
-      name: iOS device ids
+      name: iOS devices
       default: []
       selector:
-        object: {}
+        device:
+          multiple: true
 
     use_llm_image:
       name: Use LLM for image analysis
@@ -157,7 +181,12 @@ blueprint:
         - alert
         - detection
       selector:
-        object: {}
+        select:
+          multiple: true
+          custom_value: false
+          options:
+            - alert
+            - detection
 
     action1:
       name: Custom action list for new event
@@ -181,7 +210,14 @@ blueprint:
       name: Button 1 action
       default: VIEW_LIVE
       selector:
-        text: {}
+        select:
+          custom_value: true
+          options:
+            - VIEW_LIVE
+            - VIEW_SNAPSHOT
+            - VIEW_CLIP
+            - CALL
+            - SILENCE
 
     button2_title:
       name: Button 2 title
@@ -193,7 +229,14 @@ blueprint:
       name: Button 2 action
       default: VIEW_SNAPSHOT
       selector:
-        text: {}
+        select:
+          custom_value: true
+          options:
+            - VIEW_LIVE
+            - VIEW_SNAPSHOT
+            - VIEW_CLIP
+            - CALL
+            - SILENCE
 
     button3_title:
       name: Button 3 title
@@ -205,7 +248,14 @@ blueprint:
       name: Button 3 action
       default: CALL
       selector:
-        text: {}
+        select:
+          custom_value: true
+          options:
+            - VIEW_LIVE
+            - VIEW_SNAPSHOT
+            - VIEW_CLIP
+            - CALL
+            - SILENCE
 
     button1_title2:
       name: Button 1 title (update)
@@ -217,7 +267,14 @@ blueprint:
       name: Button 1 action (update)
       default: VIEW_LIVE
       selector:
-        text: {}
+        select:
+          custom_value: true
+          options:
+            - VIEW_LIVE
+            - VIEW_SNAPSHOT
+            - VIEW_CLIP
+            - CALL
+            - SILENCE
 
     button2_title2:
       name: Button 2 title (update)
@@ -229,7 +286,14 @@ blueprint:
       name: Button 2 action (update)
       default: VIEW_SNAPSHOT
       selector:
-        text: {}
+        select:
+          custom_value: true
+          options:
+            - VIEW_LIVE
+            - VIEW_SNAPSHOT
+            - VIEW_CLIP
+            - CALL
+            - SILENCE
 
     button3_title2:
       name: Button 3 title (update)
@@ -241,7 +305,14 @@ blueprint:
       name: Button 3 action (update)
       default: CALL
       selector:
-        text: {}
+        select:
+          custom_value: true
+          options:
+            - VIEW_LIVE
+            - VIEW_SNAPSHOT
+            - VIEW_CLIP
+            - CALL
+            - SILENCE
 
     call_number:
       name: Call number
